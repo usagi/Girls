@@ -1,7 +1,7 @@
 if(typeof wrp === "undefined")
-  var wrp = new Object();
+  var wrp = { };
 
-wrp.girls = new Object();
+wrp.girls = { };
 
 wrp.girls.etc = {
   container: null,
@@ -9,11 +9,14 @@ wrp.girls.etc = {
 };
 
 wrp.girls.var = {
-  current_data:
-  {
-
-  }
+  current_data: null
 };
 
-wrp.girls
+wrp.girls.initialize = function(){
+  
+};
+
+wrp.girls.run = function(){
+
+};
 
