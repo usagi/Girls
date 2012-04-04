@@ -37,12 +37,12 @@ _site/bin:
 
 bin.server-debug: _site.Girls-service
 	@ echo "[bin.server-debug]"
-	@ cat src/bin.server/*.js > _site/bin.server/main.js
+	@ cat src/bin.server/*.js > _site.Girls-service/main.js
 	
 bin.server-release: _site.Girls-service
 	@ echo "[bin.server-release]"
-	@ cat src/bin.server/*.js > _site/bin.server/main.js
-	@ yuicompressor --type js -o _site/bin.server/main.js
+	@ cat src/bin.server/*.js > _site.Girls-service/main.js
+	@ yuicompressor --type js -o _site.Girls-service/main.js
 
 _site.Girls-service:
 	@- mkdir _site.Girls-service; echo "[_site.Girls-service]"
