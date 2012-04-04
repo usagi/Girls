@@ -1,0 +1,59 @@
+#wrp_girls *
+{
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  width: 1px;
+  height: 1px;
+  color: #666;
+  background: #fff;
+     -moz-transition-property: background,color,opacity,box-shadow;
+  -webkit-transition-property: background,color,opacity,box-shadow;
+     -moz-transition-timing-function: ease-out;
+  -webkit-transition-timing-function: ease-out;
+     -moz-transition-duration: 0.20s;
+  -webkit-transition-duration: 0.20s;
+  border: 1px solid red;
+}
+
+#wrp_girls a {
+  color: hsla(240, 100%, 68%, 1.00);
+  border: 2px solid hsla(0, 0%, 90%, 0.24);
+  border-radius: 3px;
+  background-color: hsla(0, 0%, 95%, 0.70);
+}
+
+#wrp_girls a:hover {
+  background-color: hsla(0, 0%, 85%, 0.70);
+}
+
+#wrp_girls_board {
+  width: 640px;
+  height: 480px;
+  position: relative;
+  margin: auto;
+}
+
+#wrp_girls_board_title {
+  width: 540px;
+  height: 40px;
+  position: absolute;
+  top: -10px;
+  left: 50px;
+  text-align:center;
+  font-size: 18px;
+}
+
+#wrp_girls .wrp_girls_board_issue {
+  width: 150px;
+  height: 212px;
+  display:block;
+}
+
+#wrp_girls .wrp_girls_board_issue img {
+  width: 130px;
+  height: 130px;
+  top: 72px;
+  left: 10px;
+}
+

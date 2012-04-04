@@ -40,9 +40,9 @@ var main = function(){
   console.log('main begin');
   try {
     generate_data();
-    wrp.girls.etc.container = $('html');
+    wrp.girls.etc.container_selector = 'body';
     wrp.girls.initialize();
-    wrp.girls.run();
+    wrp.girls.invoke();
   } catch(e) {
     console.log('main exception: ' + e);
   }

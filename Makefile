@@ -1,7 +1,7 @@
-build-debug: _site html _site/css/main.css _site/bin/main.js bin.server-debug
+build-debug: _site html _site/css/main.css _site/bin/main.js bin.server-debug images
 	@ echo "[build-debug]"
 
-build-release: _site html _site/css/main.css-compress _site/bin/main.js-compress bin.server-debug
+build-release: _site html _site/css/main.css-compress _site/bin/main.js-compress bin.server-debug images
 	@ echo "[build-release]"
 
 clean:
@@ -13,6 +13,14 @@ _site:
 html:
 	@ echo "[html]"
 	@ cp src/*.html _site
+
+images: _site/images
+	@ echo "[images]"
+	@ cp src/images/* _site/images
+
+_site/images:
+	@ echo "[_site/images]"
+	@ mkdir _site/images
 
 _site/css/main.css: _site/css src/css/main.css
 	@ echo "[_site/css]"
