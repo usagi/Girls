@@ -10,7 +10,8 @@ npm-install: \
 	npm-install-express\
 	npm-install-ejs\
 	npm-install-mongodb\
-	npm-install-mongoose
+	npm-install-mongoose\
+	npm-install-crypto
 	
 npm-install-express:
 	cd && npm install express
@@ -23,4 +24,7 @@ npm-install-mongodb:
 	
 npm-install-mongoose:
 	cd && npm install mongoose
+
+npm-install-crypto:
+	cd && npm install crypto
 
