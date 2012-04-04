@@ -1,3 +1,8 @@
+#wrp_girls{
+  margin:0px;
+  padding:0px;
+}
+
 #wrp_girls *
 {
   position: absolute;
@@ -28,10 +33,13 @@
 }
 
 #wrp_girls_board {
+  top:50%;
+  left:50%;
   width: 640px;
   height: 480px;
-  position: relative;
-  margin: auto;
+  position: absolute;
+  margin-top: -240px;
+  margin-left:-320px;
 }
 
 #wrp_girls_board_title {

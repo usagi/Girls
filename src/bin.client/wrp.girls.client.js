@@ -41,12 +41,14 @@ wrp.girls.initialize = function(){
     dom.css('-webkit-transform','rotate(' + r + 'deg)');
     dom.css('top', (Math.random() * 268 * 0.9 + 10) + 'px');
     dom.css('left', (Math.random() * 390 * 0.9 + 10) + 'px');
-    dom.onClick = function(){ console.log("click"); };
+    dom.click( function(){ console.log("click"); } );
     this.var.dom.issues.append(dom);
   }
+  this.var.dom.issue_detail = $('<article id="#wrp_girls_issue_detail"><h1 id="wrp_girls_issue_detail_title"></h1><p id="wrp_girls_issue_detail_level_label">Challenge Lavel</p><div id="wrp_girls_issue_detail_level_stars"></div><hr><div id="wrp_girls_issue_detail_message"></div><hr id="wrp_girls_issue_detail_column_center"><ul id="wrp_girls_issue_detail_tags"></ul><a id="wrp_girls_issue_detail_repository" href=""><img src="images/gear.png" alt="repository"></a><ul id="wrp_girls_issue_detail_comitters"></ul><ul id="wrp_girls_issue_detail_comments"></ul></article>');
   this.var.dom.container.append( this.var.dom.board );
   this.var.dom.board.append( this.var.dom.title );
   this.var.dom.board.append( this.var.dom.issues );
+  this.var.dom.board.append(this.var.dom.issue_detail);
 };
 
 wrp.girls.invoke = function(){
