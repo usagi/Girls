@@ -1,7 +1,7 @@
-build-debug: _site html css-debug bin.client-debug bin.server-debug
+build-debug: _site html _site/css/main.css _site/bin/main.js bin.server-debug
 	@ echo "[build-debug]"
 
-build-release: _site html css-release bin.client-debug bin.server-debug
+build-release: _site html _site/css/main.css-compress _site/bin/main.js-compress bin.server-debug
 	@ echo "[build-release]"
 
 clean:
@@ -14,22 +14,24 @@ html:
 	@ echo "[html]"
 	@ cp src/*.html _site
 
-css-debug: _site/css src/css/main.css
-	@ echo "[css-debug]"
+_site/css/main.css: _site/css src/css/main.css
+	@ echo "[_site/css]"
 	@ cp src/css/main.css _site/css
 
-css-release: _site/css src/css/main.css
-	@ echo "[css-release]"
-	@ cp src/css/main.css _site/css
+_site/css/main.css-compress: _site/css/main.css
+	@ echo "[_site/css-compress]"
 	@ yuicompressor --type css -o _site/css/main.css _site/css/main.css
 
-bin.client-debug: _site/bin src/bin.client/main.js src/bin.client/wrp.girls.client.js
-	@ echo "[bin.client-debug]"
-	@ cat src/bin.client/* > _site/bin/main.js
-	
-bin.client-release: _site/bin src/bin.client/main.js src/bin.client/wrp.girls.client.js
-	@ echo "[bin.client-release]"
-	@ cat src/bin.client/*.js > _site/bin/main.js
+_site/bin/main.js: _site/bin src/bin.client/main.js src/bin.client/wrp.girls.client.js
+	@ echo "[_site/bin/main.js]"
+	@ cp src/bin.client/*.js _site/bin
+	@ mv _site/bin/main.js _site/bin/main.js.tmp
+	@ cat _site/bin/*.js > _site/bin/main.js
+	@ cat _site/bin/main.js.tmp >> _site/bin/main.js
+	@ rm _site/bin/main.js.tmp
+
+_site/bin/main.js-compress: _site/bin/main.js
+	@ echo "[_site/bin/main.js-compress]"
 	@ yuicompressor --type js -o _site/bin/main.js _site/bin/main.js
 
 _site/bin:
@@ -56,17 +58,18 @@ deploy-test:
 deploy:
 	@ echo [deploy]
 
-npm-install: \
-	npm-install-mongodb\
-	npm-install-mongoose\
-	npm-install-crypto
-	
-npm-install-mongodb:
-	cd && npm install mongodb --mongodb:native
-	
-npm-install-mongoose:
-	cd && npm install mongoose
+tmp:
+	@ mkdir tmp
 
-npm-install-crypto:
-	cd && npm install crypto
+test-darkhttpd:
+	@ darkhttpd _site --index main.html
+
+test-darkhttpd-daemon-start: tmp
+	@ darkhttpd _site --index main.html --daemon --pidfile tmp/darkhttpd.pid
+
+test-darkhttpd-daemon-stop: tmp/darkhttpd.pid
+	@ kill `cat tmp/darkhttpd.pid`
+
+test-darkhttpd-daemon-restart: test-darkhttpd-daemon-stop test-darkhttpd-daemon-start
+	
 
