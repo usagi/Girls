@@ -40,6 +40,7 @@ var main = function(){
   console.log('main begin');
   try {
     generate_data();
+    wrp.girls.etc.container = $('html');
     wrp.girls.initialize();
     wrp.girls.run();
   } catch(e) {
@@ -48,5 +49,5 @@ var main = function(){
   console.log('main end');
 };
 
-window.onload = main();
+$( main );
 
