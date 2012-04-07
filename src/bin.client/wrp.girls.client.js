@@ -37,11 +37,13 @@ wrp.girls = {
     (function(){
       d.title = $('<h1 id="wrp_girls_board_title">' + e.title + '</h1>');
       var b  = d.board  = $('<div id="wrp_girls_board"></div>');
-      var is = d.issues = $('<ul id="wrp_girls_board_issues"><ul>');
+      var is = d.issues = $('<ul id="wrp_girls_board_issues" dropzone="move"><ul>');
+      is.attr('ondragover', 'event.preventDefault()');
+      is.attr('ondrop'    , 'wrp.girls.drop(event)');
       
       c.append(
-        b.append(d.title)
-         .append(is)
+        b.append(is)
+         .append(d.title)
       );
       
       var dis = t.current_data.issues;
@@ -58,12 +60,16 @@ wrp.girls = {
       })();
       
       for(var key in dis){
-        var i0 = $('<a href="javascript:void(0)"></a>');
-        var i1 = $('<li id="wrp_girls_board_issue_' + key + '" class="wrp_girls_board_issue"></li>');
+        var id = 'id="wrp_girls_board_issue_' + key + '"';
+        var i0 = $('<a ' + id + ' href="javascript:void(0)" draggable="true" class="graggable"></a>');
+        i0.attr('ondragstart', 'wrp.girls.dragstart(event)');
+        i0.attr('ondragover' , 'event.preventDefault()');
+        i0.attr('ondrop'     , 'event.preventDefault()');
+        var i1 = $('<li class="wrp_girls_board_issue"></li>');
         var i2 = $('<article></article>');
         var i3 = $('<h1>' + dis[key].title + '</h1>');
-        var i4 = $('<img src="images/pin.png" alt="issue_pin" class="pin">');
-        var i5 = $('<img src="images/gear.png" alt="issue_icon" class="icon">');
+        var i4 = $('<img src="images/pin.png" alt="issue_pin" class="pin" draggable="false">');
+        var i5 = $('<img src="images/gear.png" alt="issue_icon" class="icon" draggable="false">');
         
         i0.append(
           i1.append(
@@ -145,8 +151,26 @@ wrp.girls = {
     }, t.mask_duration_in_ms);
   },
 
-  show_issue_detail: function(){
+  show_issue_detail: function(e){
+    var o = $('#' + (e.currentTarget.id));
+    wrp.girls.append_to_issues(o);
     wrp.girls.mask();
+  },
+  
+  dragstart: function(e){
+    e.dataTransfer.setData("text", e.target.id);
+  },
+  
+  drop: function(e){
+    var o = $( '#' + e.dataTransfer.getData("text") );
+    
+    wrp.girls.append_to_issues(o);
+    
+    e.preventDefault();
+  },
+
+  append_to_issues: function(o){
+    wrp.girls.tmp.dom.issues.append(o);
   },
 
   invoke: function(){

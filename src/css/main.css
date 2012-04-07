@@ -33,13 +33,13 @@
 }
 
 #wrp_girls_board {
-  top:50%;
-  left:50%;
-  width: 640px;
+  top:  50%;
+  left: 50%;
+  width:  640px;
   height: 480px;
   position: absolute;
-  margin-top: -240px;
-  margin-left:-320px;
+  margin-left: -320px;
+  margin-top:  -240px;
 }
 
 #wrp_girls_board_title {
@@ -50,6 +50,11 @@
   left: 50px;
   text-align:center;
   font-size: 18px;
+}
+
+#wrp_girls_board_issues {
+  width:  100%;
+  height: 100%;
 }
 
 #wrp_girls .wrp_girls_board_issue {
@@ -92,4 +97,6 @@
 
 #wrp_girls .size_zero { width:0;    height:0;    }
 #wrp_girls .size_max  { width:100%; height:100%; }
+
+#wrp_girls .draggable { -khtml-user-drag: element; }
 
