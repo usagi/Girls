@@ -153,18 +153,36 @@ wrp.girls = {
 
   show_issue_detail: function(e){
     var o = $('#' + (e.currentTarget.id));
-    wrp.girls.append_to_issues(o);
-    wrp.girls.mask();
+    var g = wrp.girls;
+    g.append_to_issues(o);
+    g.mask();
   },
   
   dragstart: function(e){
-    e.dataTransfer.setData("text", e.target.id);
+    var tid = e.target.id;
+    e.dataTransfer.setData(
+      "application/json",
+      JSON.stringify({
+        id: tid,
+        start_position: { x:e.x, y:e.y },
+      })
+    );
   },
   
   drop: function(e){
-    var o = $( '#' + e.dataTransfer.getData("text") );
+    var d = JSON.parse( e.dataTransfer.getData("application/json") );
+    var o = $('#' + d.id);
     
     wrp.girls.append_to_issues(o);
+
+    var p0 = d.start_position;
+    var dx = e.x - p0.x;
+    var dy = e.y - p0.y;
+    
+    var p = o.position();
+      
+    o.css('left', (p.left + dx) + 'px');
+    o.css('top' , (p.top  + dy) + 'px');
     
     e.preventDefault();
   },
@@ -174,9 +192,10 @@ wrp.girls = {
   },
 
   invoke: function(){
-    if(this.tmp.is_invoked)
+    var t = this.tmp;
+    if(t.is_invoked)
       throw "Girls was invoked";
-    this.tmp.is_invoked = true;
+    t.is_invoked = true;
   },
   
 };
