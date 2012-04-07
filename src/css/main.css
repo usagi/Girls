@@ -56,12 +56,40 @@
   width: 150px;
   height: 212px;
   display:block;
+  box-shadow: 3px 3px 5px hsla( 0, 0%, 45%, 0.75);
 }
 
-#wrp_girls .wrp_girls_board_issue img {
+#wrp_girls .wrp_girls_board_issue h1 {
+  padding: 5px;
+  width: 130px;
+  height: 50px;
+}
+
+#wrp_girls .wrp_girls_board_issue img.icon {
   width: 130px;
   height: 130px;
   top: 72px;
   left: 10px;
 }
+
+#wrp_girls .wrp_girls_board_issue img.pin {
+  top: -5px;
+  left: 67px;
+  width: 16px;
+  height: 16px;
+}
+
+#wrp_girls_mask {
+  background-color:#000;
+  width:100%;
+  height:100%;
+  position:fixed;
+}
+
+#wrp_girls .opacity_000 { opacity:0.00; }
+#wrp_girls .opacity_080 { opacity:0.80; }
+#wrp_girls .opacity_100 { opacity:1.00; }
+
+#wrp_girls .size_zero { width:0;    height:0;    }
+#wrp_girls .size_max  { width:100%; height:100%; }
 

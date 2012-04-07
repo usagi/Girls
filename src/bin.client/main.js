@@ -28,6 +28,10 @@ var generate_data = function(){
       }
     ]
   };
+  var a = wrp.girls.tmp.current_data.issues;
+  var b = a[0];
+  for(var n = 16 - 1; n; --n)
+    a.push(b);
 };
 
 var main = function(){
