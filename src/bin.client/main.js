@@ -1,7 +1,5 @@
-window.onload = main;
-
 var generate_data = function(){
-  wrp.girls.var.current_data =
+  wrp.girls.tmp.current_data =
   {
     issues:
     [
@@ -32,17 +30,14 @@ var generate_data = function(){
   };
 };
 
-var test = function(){
-  console.log(wrp.girls.var.current_data);
-};
-
 var main = function(){
   console.log('main begin');
   try {
     generate_data();
-    wrp.girls.etc.container_selector = 'body';
-    wrp.girls.initialize();
-    wrp.girls.invoke();
+    var g = wrp.girls;
+    g.etc.container_selector = 'body';
+    g.initialize();
+    g.invoke();
   } catch(e) {
     console.log('main exception: ' + e);
   }
