@@ -11,7 +11,7 @@
   width: 1px;
   height: 1px;
   color: #666;
-  background: #fff;
+  background: transparent;
      -moz-transition-property: background,color,opacity,box-shadow;
   -webkit-transition-property: background,color,opacity,box-shadow;
      -moz-transition-timing-function: ease-out;
@@ -40,6 +40,7 @@
   position: absolute;
   margin-left: -320px;
   margin-top:  -240px;
+  background: #ffc;
 }
 
 #wrp_girls_board_title {
@@ -62,6 +63,7 @@
   height: 212px;
   display:block;
   box-shadow: 3px 3px 5px hsla( 0, 0%, 45%, 0.75);
+  background: #ffe;
 }
 
 #wrp_girls .wrp_girls_board_issue h1 {

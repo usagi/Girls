@@ -15,6 +15,8 @@ wrp.girls = {
     dom: { },
     is_invoked: false,
     mask_duration_in_ms: 0,
+    issues_width: 0,
+    issue_width: 0,
   },
 
   initialize: function(){
@@ -42,9 +44,11 @@ wrp.girls = {
       is.attr('ondrop'    , 'wrp.girls.drop(event)');
       
       c.append(
-        b.append(is)
-         .append(d.title)
+        b.append(d.title)
+         .append(is)
       );
+      
+      t.issues_width = is.width();
       
       var dis = t.current_data.issues;
       var f   = 2.0 * e.max_issue_rotate_angle_in_degrees;
@@ -52,8 +56,9 @@ wrp.girls = {
       (function(){
         var i = $('<li class="wrp_girls_board_issue" style="display:none;" >&nbsp;</li>');
         is.append(i);
+        var iw = t.issue_width = i.width();
         pt = b.height() - i.height();
-        pl = b.width()  - i.width();
+        pl = b.width()  - iw;
         plm = pl * 0.1;
         pl *= 1.2;
         is.empty();
@@ -146,7 +151,6 @@ wrp.girls = {
       throw "wrp.girls.unmask; mask is not available";
     m.attr('class', 'opacity_000');
     setTimeout(function(){
-      console.log(d, m);
       m.attr('class','size_zero');
     }, t.mask_duration_in_ms);
   },
@@ -160,30 +164,41 @@ wrp.girls = {
   
   dragstart: function(e){
     var tid = e.target.id;
+    console.log(e);
     e.dataTransfer.setData(
       "application/json",
       JSON.stringify({
         id: tid,
-        start_position: { x:e.x, y:e.y },
+        start_position: { x:e.pageX, y:e.pageY },
       })
     );
   },
   
   drop: function(e){
+    var g = wrp.girls;
+
     var d = JSON.parse( e.dataTransfer.getData("application/json") );
     var o = $('#' + d.id);
-    
-    wrp.girls.append_to_issues(o);
+    g.append_to_issues(o);
 
     var p0 = d.start_position;
-    var dx = e.x - p0.x;
-    var dy = e.y - p0.y;
+    var dx = e.pageX - p0.x;
+    var dy = e.pageY - p0.y;
     
     var p = o.position();
-      
-    o.css('left', (p.left + dx) + 'px');
-    o.css('top' , (p.top  + dy) + 'px');
+    var t = g.tmp;
+    var h = t.issue_width * 0.5;
     
+    console.log(t.issues_width, t.issue_width);
+
+    var new_x = Math.min(t.issues_width - h, Math.max(-h, p.left + dx) );
+    var new_y = Math.max(0, p.top  + dy);
+
+    o.css('left', new_x + 'px');
+    o.css('top' , new_y + 'px');
+    
+    console.log(o.css('left'), o.css('top'));
+
     e.preventDefault();
   },
 
