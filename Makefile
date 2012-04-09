@@ -60,8 +60,9 @@ _site.Girls-service:
 _site/css:
 	@- mkdir _site/css; echo "_site/css"
 
-deploy-test:
+deploy-demo:
 	@ echo [deploy-test]
+	@ rsync -av --delete _site/ Girls.demo.WonderRabbitProject.net:/srv/http/WonderRabbitProject.net/demo/Girls
 
 deploy:
 	@ echo [deploy]
