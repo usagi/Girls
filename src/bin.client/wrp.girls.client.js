@@ -7,24 +7,23 @@ wrp.girls = {
     title: "Girls; Gamificated Issue-base Real Learning System",
     container_selector: null,
     max_issue_rotate_angle_in_degrees: 10,
-    mask_duration_in_seconds: 0.200,
   },
 
   tmp:{
     current_data: null,
     dom: { },
     is_invoked: false,
+    mask_duration_in_seconds: 0,
     mask_duration_in_ms: 0,
     issues_width: 0,
     issue_width: 0,
+    show_detail: false,
   },
 
   initialize: function(){
     var e = this.etc;
     var t = this.tmp;
     var d = t.dom = { };
-    
-    t.mask_duration_in_ms = e.mask_duration_in_seconds * 1000;
     
     if(typeof e.title === "string")
       $('title').text(e.title);
@@ -35,7 +34,7 @@ wrp.girls = {
       
     c.attr('id', 'wrp_girls');
     c.empty();
-
+    
     (function(){
       d.title = $('<h1 id="wrp_girls_board_title">' + e.title + '</h1>');
       var b  = d.board  = $('<div id="wrp_girls_board"></div>');
@@ -47,6 +46,20 @@ wrp.girls = {
         b.append(d.title)
          .append(is)
       );
+      
+      (function(){
+        var td = b.css('transition-duration');
+        if (typeof td !== 'string' || td.length === 0)
+          td = b.css('-moz-transition-duration');
+        if (typeof td !== 'string' || td.length === 0)
+          td = b.css('-webkit-transition-duration');
+        if (typeof td !== 'string' || td.length === 0)
+          t.mask_duration_in_seconds = 0;
+        else
+          t.mask_duration_in_seconds = Number(td.match(/[0-9.]+/)[0]);
+      })();
+      
+      t.mask_duration_in_ms = t.mask_duration_in_seconds * 1000;
       
       t.issues_width = is.width();
       
@@ -86,6 +99,7 @@ wrp.girls = {
         
         var r = 'rotate(' + (Math.random() - 0.5) * f + 'deg)';
         
+        i0.css(        'transform', r);
         i0.css(   '-moz-transform', r);
         i0.css('-webkit-transform', r);
         i0.css('top' , ( pt * Math.random() + 32 ) + 'px');
@@ -97,38 +111,51 @@ wrp.girls = {
 
       (function(){
         var m = d.mask = $('<div id="wrp_girls_mask" class="opacity_000 size_zero"></div>');
-        m.css(   '-moz-transition-duration', e.mask_duration_in_seconds + 's');
-        m.css('-webkit-transition-duration', e.mask_duration_in_seconds + 's');
-        d.container.append(m);
+        //m.css(        'transition-duration', t.mask_duration_in_seconds + 's');
+        //m.css(   '-moz-transition-duration', t.mask_duration_in_seconds + 's');
+        //m.css('-webkit-transition-duration', t.mask_duration_in_seconds + 's');
+        c.append(m);
       })();
       
-      d.issue_detail = $('<article id="#wrp_girls_issue_detail"></article>');
+      var id = d.issue_detail = $('<div id="wrp_girls_issue_detail"></div>');
       d.issue_detail_title = $('<h1 id="wrp_girls_issue_detail_title"></h1>');
       d.issue_detail_level_label = $('<p id="wrp_girls_issue_detail_level_label">Challenge Lavel</p>');
       d.issue_detail_level_stars = $('<div id="wrp_girls_issue_detail_level_stars"></div>');
       d.issue_detail_vertical_splitter = $('<hr id="wrp_girls_issue_detail_vertical_splitter">');
 
       d.issue_detail_message = $('<div id="wrp_girls_issue_detail_message"></div>');
+      d.issue_detail_from_label = $('<p id="wrp_girls_issue_detail_from_label">Issue From:<p>');
+      d.issue_detail_from_anchor =
+        $('<a href="" id="wrp_girls_issue_detail_from" title="anchor of issue from"></a>');
+      d.issue_detail_from_image = $('<img src="" alt="icon of issue from"/>');
       d.issue_detail_horizon_splitter = $('<hr id="wrp_girls_issue_detail_horizon_splitter">');
       d.issue_detail_tags = $('<ul id="wrp_girls_issue_detail_tags"></ul>');
       d.issue_detail_repository = $('<a id="wrp_girls_issue_detail_repository" href=""></a>');
       d.issue_detail_repository_image = $('<img src="images/gear.png" alt="repository">');
-      d.issue_detail_comitters = $('<ul id="wrp_girls_issue_detail_comitters"></ul>');
+      d.issue_detail_committers = $('<ul id="wrp_girls_issue_detail_committers"></ul>');
       d.issue_detail_comments = $('<ul id="wrp_girls_issue_detail_comments"></ul>');
       
-      d.issue_detail.append(d.issue_detail_title)
-                    .append(d.issue_detail_level_label)
-                    .append(d.issue_detail_level_stars)
-                    .append(d.issue_detail_vertical_splitter)
-                    .append(d.issue_detail_message)
-                    .append(d.issue_detail_horizon_splitter)
-                    .append(d.issue_detail_tags)
-                    .append(d.issue_detail_repository.append(d.issue_detail_repository_image))
-                    .append(d.issue_detail_comitters)
-                    .append(d.issue_detail_comments)
-                    ;
+      id.append(d.issue_detail_title)
+        .append(d.issue_detail_level_label)
+        .append(d.issue_detail_level_stars)
+        .append(d.issue_detail_vertical_splitter)
+        .append(d.issue_detail_message)
+        .append(d.issue_detail_from_label)
+        .append(d.issue_detail_from_anchor
+          .append(d.issue_detail_from_image)
+        )
+        .append(d.issue_detail_horizon_splitter)
+        .append(d.issue_detail_tags)
+        .append(d.issue_detail_repository
+          .append(d.issue_detail_repository_image)
+        )
+        .append(d.issue_detail_committers)
+        .append(d.issue_detail_comments)
+        ;
+      
+      id.attr('class', 'display_none in');
 
-
+      c.append(d.issue_detail);
     })();
 
   },
@@ -144,7 +171,15 @@ wrp.girls = {
   },
   
   unmask: function(){
-    var t = wrp.girls.tmp;
+    var g = wrp.girls;
+    var t = g.tmp;
+    
+    if(t.show_detail) {
+      g.unshow_issue_detail();
+      setTimeout(arguments.callee, t.mask_duration);
+      return;
+    }
+    
     var d = t.dom;
     var m = d.mask;
     if(typeof m !== "object")
@@ -154,17 +189,110 @@ wrp.girls = {
       m.attr('class','size_zero');
     }, t.mask_duration_in_ms);
   },
+  
+  unshow_issue_detail: function(){
+    var t = wrp.girls.tmp;
+    var id = t.dom.issue_detail;
+    t.show_detail_body = true;
+    id.attr('class', 'out');
+    setTimeout(function(){
+      t.show_detail = false;
+      id.attr('class', 'display_none in');
+    }, t.mask_duration_in_ms);
+  },
 
   show_issue_detail: function(e){
-    var o = $('#' + (e.currentTarget.id));
+    var tid = e.currentTarget.id;
+    var o = $('#' + tid);
     var g = wrp.girls;
     g.append_to_issues(o);
     g.mask();
+    
+    var t = g.tmp;
+    var d = t.dom;
+    
+    var i = (function(){
+      var is = t.current_data.issues;
+      var n = Number(tid.match(/[0-9]$/)[0]);
+      return is[n];
+    })();
+    
+    d.issue_detail_title.html(i.title);
+    
+    (function(){
+      var a = d.issue_detail_level_stars
+      a.empty();
+      for(var c = i.challenge_level; c; --c)
+        a.append('<img src="images/star.png"/>');
+    })();
+    
+    (function(){
+      var a = d.issue_detail_message;
+      var ps = i.message.split("\n");
+      for (var k in ps)
+        a.append('<p>' + ps[k] + '</p>');
+    })();
+    
+    (function(){
+      var f = i.from;
+      d.issue_detail_from_anchor.attr('href', f.href);
+      d.issue_detail_from_image.attr('src', f.icon);
+    })();
+    
+    (function(){
+      var a = d.issue_detail_tags
+      a.empty();
+      var ts = i.tags;
+      for(var k in ts)
+        a.append('<li>' + ts[k] + '</li>');
+    })();
+    
+    d.issue_detail_repository.attr('href', i.repository);
+    d.issue_detail_repository_image.attr('src', 'images/gear.png');
+    
+    (function(i){
+      var a = d.issue_detail_committers;
+      a.empty();
+      var cs = i.committers;
+      for(var k in cs){
+        var i = cs[k];
+        a.append('<li><a href="' + i.href + '"><img src="' + i.icon + '"/></a></li>');
+      }
+    })(i);
+    
+    (function(){
+      var a = d.issue_detail_comments
+      a.empty();
+      var cs = i.comments;
+      for(var k in cs){
+        var v = cs[k];
+        var f = v.from;
+        var el = $('<li></li>');
+        var ef = $(
+          '<a href="' + f.href + 
+          '"><img src="' + f.icon + 
+          '" alt="icon of comment from"/></a>'
+        );
+        var ep = $('<p>' + v.message + '</p>');
+        a.append(
+          el.append(ef)
+            .append(ep)
+        );
+      }
+    })();
+    
+    var id = d.issue_detail;
+    
+    id.attr('class', 'in');
+    
+    setTimeout(function(){
+      t.show_detail = true;
+      id.attr('class', '');
+    }, t.mask_duration_in_ms);
   },
   
   dragstart: function(e){
     var tid = e.target.id;
-    console.log(e);
     e.dataTransfer.setData(
       "application/json",
       JSON.stringify({
@@ -189,15 +317,11 @@ wrp.girls = {
     var t = g.tmp;
     var h = t.issue_width * 0.5;
     
-    console.log(t.issues_width, t.issue_width);
-
     var new_x = Math.min(t.issues_width - h, Math.max(-h, p.left + dx) );
     var new_y = Math.max(0, p.top  + dy);
 
     o.css('left', new_x + 'px');
     o.css('top' , new_y + 'px');
-    
-    console.log(o.css('left'), o.css('top'));
 
     e.preventDefault();
   },
