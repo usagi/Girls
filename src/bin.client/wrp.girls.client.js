@@ -186,7 +186,7 @@ wrp.girls = {
       throw "wrp.girls.unmask; mask is not available";
     m.attr('class', 'opacity_000');
     setTimeout(function(){
-      m.attr('class','size_zero');
+      m.attr('class','opacity_000 size_zero');
     }, t.mask_duration_in_ms);
   },
   
