@@ -1,6 +1,7 @@
 #wrp_girls{
   margin:0px;
   padding:0px;
+  background: url(/images/background.png);
 }
 
 #wrp_girls *
@@ -45,7 +46,8 @@
   position: absolute;
   margin-left: -320px;
   margin-top:  -240px;
-  background: #ffc;
+  background: url(/images/cork_board.png);
+  box-shadow: 2px 2px 8px hsla( 0, 0%, 25%, 0.95);
 }
 
 #wrp_girls_board_title {
@@ -55,7 +57,10 @@
   top: -10px;
   left: 50px;
   text-align:center;
-  font-size: 18px;
+  font-size: 20px;
+  line-height: 2.0em;
+  color: hsla( 0, 25%, 50%, 1.00 );
+  background: url(/images/tape.png);
 }
 
 #wrp_girls_board_issues {
@@ -113,7 +118,6 @@
           transition-property: background,color,opacity,box-shadow,margin,        transform;
      -moz-transition-property: background,color,opacity,box-shadow,margin,   -moz-transform;
   -webkit-transition-property: background,color,opacity,box-shadow,margin,-webkit-transform;
-  background-color: #ffe;
   position: fixed;
   top:  50%;
   left: 50%;
@@ -125,6 +129,14 @@
           transform: rotateX(0deg);
      -moz-transform: rotateX(0deg);
   -webkit-transform: rotateX(0deg);
+}
+
+#wrp_girls_issue_detail_background {
+  background: url(/images/old_paper.png);
+  width:  978px;
+  height: 620px;
+  top:  -90px;
+  left: -129px;
 }
 
 #wrp_girls_issue_detail.in {
@@ -149,7 +161,9 @@
   width: 100%;
   top: 40px;
   height: 2px;
-  border: 1px solid #0f0;
+  border: 0;
+  border-bottom: 2px dashed hsla(30, 65%, 65%, 1.00);
+  background: transparent;
 }
 
 #wrp_girls_issue_detail_horizon_splitter {
@@ -157,7 +171,9 @@
   top: 240px;
   width: 360px;
   height: 2px;
-  border: 1px solid #0f0;
+  border: 0;
+  border-bottom: 1px dashed hsla(30, 65%, 65%, 1.00);
+  background: transparent;
           transform: rotateZ(90deg);
      -moz-transform: rotateZ(90deg);
   -webkit-transform: rotateZ(90deg);

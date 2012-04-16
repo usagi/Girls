@@ -203,6 +203,7 @@ wrp.girls = (function(){
       })();
       
       var id = d.issue_detail = $('<div id="wrp_girls_issue_detail"></div>');
+      d.issue_detail_background = $('<div id="wrp_girls_issue_detail_background"></div>');
       d.issue_detail_title = $('<h1 id="wrp_girls_issue_detail_title"></h1>');
       d.issue_detail_level_label = $('<p id="wrp_girls_issue_detail_level_label">Challenge Lavel</p>');
       d.issue_detail_level_stars = $('<div id="wrp_girls_issue_detail_level_stars"></div>');
@@ -220,7 +221,8 @@ wrp.girls = (function(){
       d.issue_detail_committers = $('<ul id="wrp_girls_issue_detail_committers"></ul>');
       d.issue_detail_comments = $('<ul id="wrp_girls_issue_detail_comments"></ul>');
       
-      id.append(d.issue_detail_title)
+      id.append(d.issue_detail_background)
+        .append(d.issue_detail_title)
         .append(d.issue_detail_level_label)
         .append(d.issue_detail_level_stars)
         .append(d.issue_detail_vertical_splitter)
