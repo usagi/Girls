@@ -220,6 +220,7 @@
 #wrp_girls_issue_detail_from img {
   width: 30px;
   height: 30px;
+  border-radius: 3px;
 }
 
 #wrp_girls_issue_detail_tags {
@@ -261,6 +262,7 @@
   display: inline-block;
   width: 30px;
   height: 30px;
+  border-radius: 3px;
   position: relative;
 }
 
@@ -296,6 +298,7 @@
   position: relative;
   width: 30px;
   height: 30px;
+  border-radius: 3px;
 }
 
 #wrp_girls_issue_detail_comments {
@@ -310,7 +313,7 @@
   display: block;
   list-style: none;
   position: relative;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   height:auto;
   width:100%;
 }
@@ -318,6 +321,7 @@
 #wrp_girls_issue_detail_comments li img {
   width: 30px;
   height: 30px;
+  border-radius: 3px;
 }
 
 #wrp_girls_issue_detail_comments li p {

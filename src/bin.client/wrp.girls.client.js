@@ -35,6 +35,7 @@ wrp.girls = (function(){
   
   p.run = function() {
     var t = this.tmp;
+    
     switch (t.phase) {
       case 0:
         this.load_data_source();
@@ -50,6 +51,11 @@ wrp.girls = (function(){
         throw 'wrp.girls.run: unkown phase; ' + t.phase;
     }
     
+    switch (t.phase){
+      case 20:
+        return;
+    }
+
     if (t.phase < 1000)
       this.run();
   };
@@ -63,7 +69,7 @@ wrp.girls = (function(){
         break;
       case typeof {}:
         if(s.type === 'GoogleDocs/spreadsheets')
-          this.load_data_source_from_GoogleDocs_spreadsheets(s.key);
+          this.load_data_source_from_GoogleDocs_spreadsheets();
         break;
     }
   };
@@ -74,31 +80,100 @@ wrp.girls = (function(){
     t.current_data = f();
   };
   
-  p.load_data_source_from_GoogleDocs_spreadsheets = function(k) {
+  p.generate_GoogleDocs_query = function(sheet, query){
+    if(typeof sheet !== typeof 0)
+      sheet = 0;
+    var q = new google.visualization.Query(
+      'http://spreadsheets.google.com/tq?key=' + this.etc.data_source.key
+      + '&amp;pub=1'
+    );
+    if(typeof query === typeof '')
+      q.setQuery(query);
+    return q;
+  };
+
+  p.load_data_source_from_GoogleDocs_spreadsheets = function() {
     this.tmp.phase = 20;
-    var q = new google.visualization.Query('http://spreadsheets.google.com/tq?key='+k);
-    q.send(this.load_data_source_from_GoogleDocs_spreadsheets_callback);
+    var q = this.generate_GoogleDocs_query();
+    var f = function(r){
+      wrp.girls.prototype.proc[this.proc_key]
+        .load_data_source_from_GoogleDocs_spreadsheets_callback(r);
+    };
+    f.proc_key = this.tmp.proc_key;
+    q.send(f);
   };
   
   p.load_data_source_from_GoogleDocs_spreadsheets_callback = function(r) {
     var t = this.tmp;
     t.phase = 30;
     
+    if (r.isError())
+      throw 'wrp.girls: error on get data from GoogleDocs/spreadsheets';
+    
     var d = { issues: [] };
     var is = d.issues;
     
-    var i = {
-      title: '',
-      challenge_level: 0,
-      repository: '',
-      message: '',
-      from: { href: '', icon: '' },
-      committers: [ { href: '', icon: '' } ],
-      tags: [ '' ],
-      comments: [ { message: '', from: { href: '', icon: ''} } ],
-    };
+    var data = r.getDataTable();
     
-    is.push(i);
+    var column_title            = 0;
+    var column_challenge_level  = 1;
+    var column_repository       = 2;
+    var column_message          = 3;
+    var column_from_href        = 4;
+    var column_from_icon        = 5;
+    var column_tags             = 6;
+    var column_committers_href  = 7;
+    var column_committers_icon  = 8;
+    var column_comments_message = 9;
+    var column_comments_href    = 10;
+    var column_comments_icon    = 11;
+    
+    for (var row = data.getNumberOfRows() - 1; row >= 0; --row) {
+      var i = {
+        title          : data.getValue(row, column_title),
+        challenge_level: data.getValue(row, column_challenge_level),
+        repository     : data.getValue(row, column_repository),
+        message        : data.getValue(row, column_message),
+        from: {
+          href         : data.getValue(row, column_from_href),
+          icon         : data.getValue(row, column_from_icon),
+        },
+        tags: [ /*''*/ ],
+        committers: [ /*{ href: '', icon: '' }*/ ],
+        comments: [ /*{ message: '', from: { href: '', icon: ''} }*/ ],
+      };
+      
+      var tags = data.getValue(row, column_tags).split('\n');
+      for(var k in tags)
+        i.tags.push(tags[k]);
+      
+      var committers_href = data.getValue(row, column_committers_href).split('\n');
+      var committers_icon = data.getValue(row, column_committers_icon).split('\n');
+      if(committers_href.length !== committers_icon.length)
+        throw 'wrp.girls.load_data_source_from_GoogleDocs_spreadsheets_callback: commmiters_* length is not mutch';
+      for(var k in committers_href)
+        i.committers.push({
+          href: committers_href[k],
+          icon: committers_icon[k],
+        });
+      
+      var comments_message = data.getValue(row, column_comments_message).split('\n');
+      var comments_href = data.getValue(row, column_comments_href).split('\n');
+      var comments_icon = data.getValue(row, column_comments_icon).split('\n');
+      for(var k in comments_message){
+        if(comments_message[k].length === 0)
+          break;
+        i.comments.push({
+          message: comments_message[k],
+          from: {
+            href: comments_href[k],
+            icon: comments_icon[k],
+          },
+        });
+      }
+
+      is.push(i);
+    }
     
     t.current_data = d;
     
@@ -310,6 +385,7 @@ wrp.girls = (function(){
     
     (function(){
       var a = d.issue_detail_message;
+      a.empty();
       var ps = i.message.split("\n");
       for (var k in ps)
         a.append('<p>' + ps[k] + '</p>');

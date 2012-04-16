@@ -45,11 +45,11 @@ var main = function(){
   try {
     var g = new wrp.girls;
     g.etc.container_selector = 'body';
-    g.etc.data_source = generate_data;
-    //g.etc.data_source = {
-    //  type: 'GoogleDocs/spreadsheets',
-    //  key : '0As7NXUDzM875dHdXeEtSQ3NpLXpKdmFGNk5IR2U2QlE',
-    //};
+    //g.etc.data_source = generate_data;
+    g.etc.data_source = {
+      type: 'GoogleDocs/spreadsheets',
+      key : '0As7NXUDzM875dHdXeEtSQ3NpLXpKdmFGNk5IR2U2QlE',
+    };
     g.run();
   } catch(e) {
     console.log('main exception: ' + e);
