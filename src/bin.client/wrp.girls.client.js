@@ -370,7 +370,7 @@ wrp.girls = (function(){
     
     var i = (function(){
       var is = t.current_data.issues;
-      var n = Number(tid.match(/[0-9]$/)[0]);
+      var n = Number(tid.match(/[0-9]+$/)[0]);
       return is[n];
     })();
     
