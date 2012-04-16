@@ -1,30 +1,117 @@
 if(typeof wrp === "undefined")
   var wrp = { };
 
-wrp.girls = {
+wrp.girls = (function(){
+  
+  var constractor = function() {
+    var proc_length = this.proc.length;
 
-  etc:{
-    title: "Girls; Gamificated Issue-base Real Learning System",
-    container_selector: null,
-    max_issue_rotate_angle_in_degrees: 10,
-  },
+    this.etc = {
+      title: "Girls; Gamificated Issue-base Real Learning System",
+      container_selector: null,
+      data_source: null,
+      max_issue_rotate_angle_in_degrees: 10,
+    };
 
-  tmp:{
-    current_data: null,
-    dom: { },
-    is_invoked: false,
-    mask_duration_in_seconds: 0,
-    mask_duration_in_ms: 0,
-    issues_width: 0,
-    issue_width: 0,
-    show_detail: false,
-  },
-
-  initialize: function(){
+    this.tmp = {
+      current_data: null,
+      dom: { },
+      is_invoked: false,
+      mask_duration_in_seconds: 0,
+      mask_duration_in_ms: 0,
+      issues_width: 0,
+      issue_width: 0,
+      show_detail: false,
+      phase: 0,
+      proc_key: proc_length, 
+    };
+    
+    this.proc[proc_length] = this;
+  };
+  
+  var p = constractor.prototype;
+  
+  p.proc = [];
+  
+  p.run = function() {
+    var t = this.tmp;
+    switch (t.phase) {
+      case 0:
+        this.load_data_source();
+        break;
+      case 10:
+      case 30:
+        this.creation();
+        break;
+      case 100:
+        t.phase = 1000;
+        break;
+      default:
+        throw 'wrp.girls.run: unkown phase; ' + t.phase;
+    }
+    
+    if (t.phase < 1000)
+      this.run();
+  };
+  
+  p.load_data_source = function() {
+    this.tmp.phase = 1;
+    var s = this.etc.data_source;
+    switch(typeof s){
+      case typeof function(){}:
+        this.load_data_source_from_function(s);
+        break;
+      case typeof {}:
+        if(s.type === 'GoogleDocs/spreadsheets')
+          this.load_data_source_from_GoogleDocs_spreadsheets(s.key);
+        break;
+    }
+  };
+  
+  p.load_data_source_from_function = function(f){
+    var t = this.tmp;
+    t.phase = 10;
+    t.current_data = f();
+  };
+  
+  p.load_data_source_from_GoogleDocs_spreadsheets = function(k) {
+    this.tmp.phase = 20;
+    var q = new google.visualization.Query('http://spreadsheets.google.com/tq?key='+k);
+    q.send(this.load_data_source_from_GoogleDocs_spreadsheets_callback);
+  };
+  
+  p.load_data_source_from_GoogleDocs_spreadsheets_callback = function(r) {
+    var t = this.tmp;
+    t.phase = 30;
+    
+    var d = { issues: [] };
+    var is = d.issues;
+    
+    var i = {
+      title: '',
+      challenge_level: 0,
+      repository: '',
+      message: '',
+      from: { href: '', icon: '' },
+      committers: [ { href: '', icon: '' } ],
+      tags: [ '' ],
+      comments: [ { message: '', from: { href: '', icon: ''} } ],
+    };
+    
+    is.push(i);
+    
+    t.current_data = d;
+    
+    this.run();
+  };
+  
+  p.creation = function() {
+    this.tmp.phase = 100;
+    
     var e = this.etc;
     var t = this.tmp;
     var d = t.dom = { };
-    
+
     if(typeof e.title === "string")
       $('title').text(e.title);
     
@@ -40,7 +127,7 @@ wrp.girls = {
       var b  = d.board  = $('<div id="wrp_girls_board"></div>');
       var is = d.issues = $('<ul id="wrp_girls_board_issues" dropzone="move"><ul>');
       is.attr('ondragover', 'event.preventDefault()');
-      is.attr('ondrop'    , 'wrp.girls.drop(event)');
+      is.attr('ondrop'    , "wrp.girls.prototype.proc['" + t.proc_key + "'].drop(event)");
       
       c.append(
         b.append(d.title)
@@ -80,7 +167,7 @@ wrp.girls = {
       for(var key in dis){
         var id = 'id="wrp_girls_board_issue_' + key + '"';
         var i0 = $('<a ' + id + ' href="javascript:void(0)" draggable="true" class="graggable"></a>');
-        i0.attr('ondragstart', 'wrp.girls.dragstart(event)');
+        i0.attr('ondragstart', "wrp.girls.prototype.proc['" + t.proc_key + "'].dragstart(event)");
         i0.attr('ondragover' , 'event.preventDefault()');
         i0.attr('ondrop'     , 'event.preventDefault()');
         var i1 = $('<li class="wrp_girls_board_issue"></li>');
@@ -104,16 +191,14 @@ wrp.girls = {
         i0.css('-webkit-transform', r);
         i0.css('top' , ( pt * Math.random() + 32 ) + 'px');
         i0.css('left', ( pl * Math.random() - plm) + 'px');
-        i0.click( wrp.girls.show_issue_detail );
+        i0.click( function(){wrp.girls.prototype.proc[t.proc_key].show_issue_detail(event);} );
         
         is.append(i0);
       }
 
       (function(){
         var m = d.mask = $('<div id="wrp_girls_mask" class="opacity_000 size_zero"></div>');
-        //m.css(        'transition-duration', t.mask_duration_in_seconds + 's');
-        //m.css(   '-moz-transition-duration', t.mask_duration_in_seconds + 's');
-        //m.css('-webkit-transition-duration', t.mask_duration_in_seconds + 's');
+        m.click( function(){wrp.girls.prototype.proc[t.proc_key].unmask();} );
         c.append(m);
       })();
       
@@ -158,28 +243,23 @@ wrp.girls = {
       c.append(d.issue_detail);
     })();
 
-  },
+  };
   
-  mask: function(){
+  p.mask = function(){
     var d = this.tmp.dom;
     var m = d.mask;
     m.attr('class', 'opactiry_000 size_max');
     setTimeout(function(){
       m.attr('class', 'opacity_080');
-      m.click( wrp.girls.unmask );
     }, 0);
-  },
+  };
   
-  unmask: function(){
-    var g = wrp.girls;
-    var t = g.tmp;
-    
+  p.unmask = function(proc_key){
+    var t = this.tmp;
     if(t.show_detail) {
-      g.unshow_issue_detail();
-      setTimeout(arguments.callee, t.mask_duration);
+      this.unshow_issue_detail(t.proc_key);
       return;
     }
-    
     var d = t.dom;
     var m = d.mask;
     if(typeof m !== "object")
@@ -188,27 +268,27 @@ wrp.girls = {
     setTimeout(function(){
       m.attr('class','opacity_000 size_zero');
     }, t.mask_duration_in_ms);
-  },
+  };
   
-  unshow_issue_detail: function(){
-    var t = wrp.girls.tmp;
-    var id = t.dom.issue_detail;
+  p.unshow_issue_detail = function(proc_key){
+    var t = this.tmp;
     t.show_detail_body = true;
-    id.attr('class', 'out');
+    t.dom.issue_detail.attr('class', 'out');
     setTimeout(function(){
-      t.show_detail = false;
-      id.attr('class', 'display_none in');
+      var me = wrp.girls.prototype.proc[proc_key];
+      me.tmp.show_detail = false;
+      me.tmp.dom.issue_detail.attr('class', 'display_none in');
+      me.unmask();
     }, t.mask_duration_in_ms);
-  },
+  };
 
-  show_issue_detail: function(e){
+  p.show_issue_detail = function(e){
     var tid = e.currentTarget.id;
     var o = $('#' + tid);
-    var g = wrp.girls;
-    g.append_to_issues(o);
-    g.mask();
+    this.append_to_issues(o);
+    this.mask();
     
-    var t = g.tmp;
+    var t = this.tmp;
     var d = t.dom;
     
     var i = (function(){
@@ -286,12 +366,14 @@ wrp.girls = {
     id.attr('class', 'in');
     
     setTimeout(function(){
+      if( ! t.dom.mask.attr('class').match(/opacity_080/) )
+        return;
       t.show_detail = true;
       id.attr('class', '');
     }, t.mask_duration_in_ms);
-  },
+  };
   
-  dragstart: function(e){
+  p.dragstart = function(e){
     var tid = e.target.id;
     e.dataTransfer.setData(
       "application/json",
@@ -300,21 +382,19 @@ wrp.girls = {
         start_position: { x:e.pageX, y:e.pageY },
       })
     );
-  },
+  };
   
-  drop: function(e){
-    var g = wrp.girls;
-
+  p.drop = function(e){
     var d = JSON.parse( e.dataTransfer.getData("application/json") );
     var o = $('#' + d.id);
-    g.append_to_issues(o);
+    this.append_to_issues(o);
 
     var p0 = d.start_position;
     var dx = e.pageX - p0.x;
     var dy = e.pageY - p0.y;
     
     var p = o.position();
-    var t = g.tmp;
+    var t = this.tmp;
     var h = t.issue_width * 0.5;
     
     var new_x = Math.min(t.issues_width - h, Math.max(-h, p.left + dx) );
@@ -324,18 +404,12 @@ wrp.girls = {
     o.css('top' , new_y + 'px');
 
     e.preventDefault();
-  },
+  };
 
-  append_to_issues: function(o){
-    wrp.girls.tmp.dom.issues.append(o);
-  },
-
-  invoke: function(){
-    var t = this.tmp;
-    if(t.is_invoked)
-      throw "Girls was invoked";
-    t.is_invoked = true;
-  },
+  p.append_to_issues = function(o){
+    this.tmp.dom.issues.append(o);
+  };
   
-};
+  return constractor;
+})();
 

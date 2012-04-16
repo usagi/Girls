@@ -21,7 +21,7 @@
           transition-duration: 0.90s;
      -moz-transition-duration: 0.90s;
   -webkit-transition-duration: 0.90s;
-  border: 1px solid red;
+  /*border: 1px solid red;*/
 }
 
 #wrp_girls a {
